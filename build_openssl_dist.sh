@@ -2,7 +2,9 @@
 
 set -x
 
-TMP_DIR=../build_openssl
+DFT_DIST_DIR="$( cd "$(dirname "$0")" ; pwd -P )"
+TMP_DIR=$DFT_DIST_DIR/build
+
 CROSS_TOP_SIM="`xcode-select --print-path`/Platforms/iPhoneSimulator.platform/Developer"
 CROSS_SDK_SIM="iPhoneSimulator.sdk"
 
@@ -24,7 +26,7 @@ function build_for ()
   export CROSS_SDK="${!CROSS_SDK_ENV}"
   ./Configure $PLATFORM "-arch $ARCH -fembed-bitcode" no-asm no-shared no-hw no-async --prefix=${TMP_DIR}/${ARCH} || exit 1
   # problem of concurrent build; make -j8
-  make && make install_sw || exit 2
+  make -j8 && make install_sw || exit 2
   unset CROSS_TOP
   unset CROSS_SDK
 }
@@ -50,11 +52,10 @@ pack_for ssl || exit 6
 pack_for crypto || exit 7
 
 cp -r ${TMP_DIR}/armv7s/include ${TMP_DIR}/
-curl -O https://raw.githubusercontent.com/sinofool/build-openssl-ios/master/patch-include.patch
+#curl -O https://raw.githubusercontent.com/sinofool/build-openssl-ios/master/patch-include.patch
 #cp ../build-openssl-ios/patch-include.patch .
 patch -p3 ${TMP_DIR}/include/openssl/opensslconf.h < patch-include.patch
 
-DFT_DIST_DIR=${HOME}/Desktop/openssl-ios-dist/
 DIST_DIR=${DIST_DIR:-$DFT_DIST_DIR}
 mkdir -p ${DIST_DIR}
 cp -r ${TMP_DIR}/include ${TMP_DIR}/lib ${DIST_DIR}
