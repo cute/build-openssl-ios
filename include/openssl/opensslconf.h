@@ -45,9 +45,6 @@ extern "C" {
 #ifndef OPENSSL_NO_ASAN
 # define OPENSSL_NO_ASAN
 #endif
-#ifndef OPENSSL_NO_ASM
-# define OPENSSL_NO_ASM
-#endif
 #ifndef OPENSSL_NO_ASYNC
 # define OPENSSL_NO_ASYNC
 #endif
@@ -80,9 +77,6 @@ extern "C" {
 #endif
 #ifndef OPENSSL_NO_HEARTBEATS
 # define OPENSSL_NO_HEARTBEATS
-#endif
-#ifndef OPENSSL_NO_HW
-# define OPENSSL_NO_HW
 #endif
 #ifndef OPENSSL_NO_MSAN
 # define OPENSSL_NO_MSAN
@@ -199,21 +193,11 @@ extern "C" {
  * The following are cipher-specific, but are part of the public API.
  */
 #if !defined(OPENSSL_SYS_UEFI)
-# ifdef __LP64__
-#  undef BN_LLONG
-# else
-#  define BN_LLONG
-# endif
+# define BN_LLONG
 /* Only one for the following should be defined */
-# ifdef __LP64__
-#  define SIXTY_FOUR_BIT_LONG
-#  undef SIXTY_FOUR_BIT
-#  undef THIRTY_TWO_BIT
-# else
-#  undef SIXTY_FOUR_BIT_LONG
-#  undef SIXTY_FOUR_BIT
-#  define THIRTY_TWO_BIT
-# endif
+# undef SIXTY_FOUR_BIT_LONG
+# undef SIXTY_FOUR_BIT
+# define THIRTY_TWO_BIT
 #endif
 
 #define RC4_INT unsigned char
